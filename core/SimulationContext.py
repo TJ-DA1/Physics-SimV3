@@ -20,4 +20,3 @@ class SimulationContext:
         self.balls = []
         self.squares = []
         self.objects = []
-

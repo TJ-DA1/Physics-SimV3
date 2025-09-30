@@ -1,4 +1,4 @@
-from common.definitions import *
+from common import *
 
 class Square:
     col = col
