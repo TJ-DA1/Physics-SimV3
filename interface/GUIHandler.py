@@ -34,17 +34,18 @@ class GUIHandler:
         for event in events:
             if event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
                 self.context.colid = ["Main", "Outline", "Background"].index(event.selected_option_id)
+                rainbowcheck.set_state(self.context.rainbow[self.context.colid])
 
             if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                 match self.context.colid:
                     case 0:
-                        self.context.col = hexformat(event.text)
-                    case 1:
                         self.context.col2 = hexformat(event.text)
+                    case 1:
+                        self.context.col = hexformat(event.text)
                     case 2:
                         self.context.bgcol = hexformat(event.text)
 
-            if event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
+            elif event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                 if event.ui_element == gslider:
                     self.context.gmag = event.value
                     glabel.set_text(f"Gravity magnitude: {self.context.gmag}")
@@ -60,17 +61,22 @@ class GUIHandler:
                 elif event.ui_element == radslider:
                     for i in self.context.balls:
                         i.radius = event.value
-                    radlabel.set_text(f"Radius: {self.context.balls[0].radius}")
+                        config.radius = event.value
+                    radlabel.set_text(f"Radius: {config.rad}")
                 elif event.ui_element == ballcount:
                     if len(self.context.balls) < event.value:
-                        self.context.balls += create_ball(self.Ball, event.value - len(self.context.balls), self.context.balls[0].radius)
-
+                        self.context.balls += create_ball(self.Ball, event.value - len(self.context.balls), config.rad)
                     elif len(self.context.balls) > event.value:
                         for i in range(len(self.context.balls) - event.value):
                             self.context.balls.pop()
 
                     config.bcount = len(self.context.balls)
                     balllabel.set_text(f"Balls: {config.bcount}")
+
+            elif event.type == pygame_gui.UI_CHECK_BOX_CHECKED:
+                self.context.rainbow[self.context.colid] = True
+            elif event.type == pygame_gui.UI_CHECK_BOX_UNCHECKED:
+                self.context.rainbow[self.context.colid] = False
 
             if event.type == pygame.QUIT:
                 pygame.quit()

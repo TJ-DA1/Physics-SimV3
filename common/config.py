@@ -17,12 +17,12 @@ deg = 90
 spinvel = 0
 
 # Colours
-col = [255,255,255]
-col2 = [0,0,0]
+col = [0,0,0]
+col2 = [255,255,255]
 bgcol = [255,255,255]
 
 # Balls
-rad = 15
+rad = 10
 pad = 0
 passes = 5
 restitution = 0.5

@@ -1,4 +1,4 @@
-# Physics Simulator V2 by TJ
+# Physics Simulator V3 by TJ
 
 ## Common
 Common contains configuration variables and helpers that display on the main window. Editing config will change the base settings that the simulation runs on including how the objects interact with each other and with the boundaries of the system. Interface defines the UI manager and elements that help dynamically change the parameters of the system through the render window.

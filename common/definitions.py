@@ -50,3 +50,26 @@ def hexformat(hexstring):
                 if check == 3:
                     return list([int(i) for i in string2])            
     return None
+
+def updrainbow(context, colour):
+    if True not in context.rainbow:
+        return
+    if context.up:
+        colour[context.c2] += 20
+        if colour[context.c2] >= 255:
+            colour[context.c2] = 255
+            context.up = not context.up
+    else:
+        colour[context.c1] -= 20
+        if colour[context.c1] <= 0:
+            colour[context.c1] = 0
+            context.up = not context.up
+            context.c1 += 1 if context.c1 != 2 else -2
+            context.c2 += 1 if context.c2 != 2 else -2
+
+    for i in range(len(context.rainbow)):
+        if context.rainbow[i]:
+            match i:
+                case 0: context.col2 = list(context.rcol)
+                case 1: context.col = list(context.rcol)
+                case 2: context.bgcol = list(context.rcol)

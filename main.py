@@ -7,7 +7,7 @@ context = SimulationContext()
 collision = CollHandler(context)
 interface = GUIHandler(context, Ball, Square)
 
-preconfiguration = "figure"
+preconfiguration = "random"
 
 context.squares += preconfig[preconfiguration][0]
 context.balls += preconfig[preconfiguration][1]
@@ -20,6 +20,9 @@ def fixedupdate(ctx):
     global square
     ctx.objects = ctx.balls + ctx.squares
     ctx.deg += ctx.spinvel
+
+    updrainbow(ctx, ctx.rcol)
+
     psurface.fill(ctx.bgcol)
 
     interface.handle()
@@ -42,9 +45,9 @@ def fixedupdate(ctx):
         i.calcpoints()
 
     for i in ctx.objects:
-        if ctx.bring: i.x, i.y = pygame.mouse.get_pos() if type(i) == Ball else (i.x, i.y)
+        if ctx.bring: i.x, i.y = (pygame.mouse.get_pos()[0] * pwidth / width, pygame.mouse.get_pos()[1] * pheight / height) if type(i) == Ball else (i.x, i.y)
         i.movecalc2()
-        i.draw(ctx.col, ctx.col2)
+        i.draw(ctx.col2, ctx.col)
 
     small_screen = pygame.transform.scale(psurface, scalesize)
     pixelated_screen = pygame.transform.scale(small_screen, (width, height))

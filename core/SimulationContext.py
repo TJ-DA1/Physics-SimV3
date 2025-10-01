@@ -15,7 +15,12 @@ class SimulationContext:
         self.col = col
         self.col2 = col2
         self.bgcol = bgcol
+        self.rcol = [0,0,0]
+        self.rainbow = [False, False, False]
         self.colid = 0
+        self.c1 = 0
+        self.c2 = 1
+        self.up = True
 
         self.balls = []
         self.squares = []
