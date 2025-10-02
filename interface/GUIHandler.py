@@ -8,6 +8,24 @@ class GUIHandler:
         self.Ball = Ball
         self.Square = Square
         self.guiswitch = False
+        self.selswitch = False
+        self.selind = 0
+        self.selid = 0
+
+    def objsel(self, id, l, r):
+        sellist = [None, self.context.balls, self.context.squares][id]
+        if sellist == None:
+            return
+        try:
+            sellist[self.selind].selected = False
+
+            if l:
+                self.selind -= (1 if self.selind != 0 else 0)
+            if r:
+                self.selind += (1 if self.selind != len(sellist) - 1 else 0)
+            sellist[self.selind].selected = True
+        except:
+            self.selid = 0
     
     def handle(self,):
         keys = pygame.key.get_pressed()
@@ -33,10 +51,27 @@ class GUIHandler:
 
         for event in events:
             if event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
-                self.context.colid = ["Main", "Outline", "Background"].index(event.selected_option_id)
-                rainbowcheck.set_state(self.context.rainbow[self.context.colid])
+                if event.ui_element == colourselector:
+                    self.context.colid = ["Main", "Outline", "Background"].index(event.selected_option_id)
+                    rainbowcheck.set_state(self.context.rainbow[self.context.colid])
+                else:
+                    self.selid = ["None", "Ball", "Rectangle"].index(event.selected_option_id)
+                    self.selind = 0
+                    for i in self.context.objects:
+                        i.selected = False
+                    self.objsel(self.selid, True, False)
 
-            if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED:
+                for i in self.context.balls:
+                    if i.selected:
+                        self.context.balls.remove(i)
+                        self.objsel(self.selid, True, False)
+                for i in self.context.squares:
+                    if i.selected:
+                        self.context.squares.remove(i)
+                        self.objsel(self.selid, True, False)
+
+            elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                 match self.context.colid:
                     case 0:
                         self.context.col2 = hexformat(event.text)
@@ -70,13 +105,20 @@ class GUIHandler:
                         for i in range(len(self.context.balls) - event.value):
                             self.context.balls.pop()
 
-                    config.bcount = len(self.context.balls)
-                    balllabel.set_text(f"Balls: {config.bcount}")
-
             elif event.type == pygame_gui.UI_CHECK_BOX_CHECKED:
                 self.context.rainbow[self.context.colid] = True
             elif event.type == pygame_gui.UI_CHECK_BOX_UNCHECKED:
                 self.context.rainbow[self.context.colid] = False
+
+            if (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]) and self.selswitch:
+                self.objsel(self.selid, keys[pygame.K_LEFT], keys[pygame.K_RIGHT])
+                self.selswitch = False
+            elif not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
+                self.selswitch = True
+
+            config.bcount = len(self.context.balls)
+            balllabel.set_text(f"Balls: {config.bcount}")
+            ballcount.set_current_value(config.bcount)
 
             if event.type == pygame.QUIT:
                 pygame.quit()

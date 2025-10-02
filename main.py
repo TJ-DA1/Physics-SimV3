@@ -7,7 +7,7 @@ context = SimulationContext()
 collision = CollHandler(context)
 interface = GUIHandler(context, Ball, Square)
 
-preconfiguration = "random"
+preconfiguration = ("null")
 
 context.squares += preconfig[preconfiguration][0]
 context.balls += preconfig[preconfiguration][1]
@@ -19,6 +19,7 @@ running = True
 def fixedupdate(ctx):
     global square
     ctx.objects = ctx.balls + ctx.squares
+    config.bcount = len(ctx.balls)
     ctx.deg += ctx.spinvel
 
     updrainbow(ctx, ctx.rcol)

@@ -21,6 +21,7 @@ class Ball:
         self.static = static
         self.drawtrail = drawtrail
         self.points = []
+        self.selected = False
 
     def movecalc(self):
         if self.static:
@@ -93,5 +94,9 @@ class Ball:
 
 
     def draw(self, colour, colour2):
+        if self.selected:
+            pygame.draw.circle(psurface, (0,0,255), (self.x + (windowpad / 2), self.y + (windowpad / 2)),self.radius + self.padding)
+            pygame.draw.circle(psurface, colour, (self.x + (windowpad / 2), self.y + (windowpad / 2)),self.radius - math.ceil(self.radius / 5) + self.padding)
+            return
         pygame.draw.circle(psurface, colour2, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius + self.padding)
         pygame.draw.circle(psurface, colour, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius - math.ceil(self.radius / 5) + self.padding)

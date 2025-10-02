@@ -14,6 +14,7 @@ class Square:
         self.lines = []
         self.calcpoints()
         self.radius = rad
+        self.selected = False
 
     def calcpoints(self):
         self.points = []
@@ -29,6 +30,10 @@ class Square:
         self.lines = [(self.points[i], self.points[(i+1) if not (i+1) >= 4 else 0]) for i in range(4)]
 
     def draw(self, colour, colour2):
+        if self.selected:
+            pygame.draw.polygon(psurface, colour, self.points, 0)
+            pygame.draw.polygon(psurface, (0,0,255), self.points, math.ceil((self.sizex + self.sizey) / 60))
+            return
         pygame.draw.polygon(psurface, colour, self.points, 0)
         pygame.draw.polygon(psurface, colour2, self.points, math.ceil((self.sizex + self.sizey) / 60))
 

@@ -22,4 +22,7 @@ colourentry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((0, 
 colourselector = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((0, height - 45),(100, 25)), options_list = ["Main", "Outline", "Background"], starting_option = "Main", manager = manager)
 rainbowcheck = pygame_gui.elements.UICheckBox(relative_rect=pygame.Rect((100, height - 25),(25,25)), text="Rainbow", initial_state = False, manager=manager)
 
-framelabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((width - 50, height-20), (50, 20)), text=f"{framerate}fps", manager=manager)
+objselector = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((width - 100, height - 25),(100, 25)), options_list = ["None", "Ball", "Rectangle"], starting_option = "None", manager = manager)
+objdel = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((width - 125, height - 25), (25,25)), text = "X", manager = manager)
+
+framelabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((width - 50, height-45), (50, 20)), text=f"{framerate}fps", manager=manager)
