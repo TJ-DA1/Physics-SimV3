@@ -6,12 +6,11 @@ class Ball:
     rest = restitution
     fric = friction
     forces = []
-    def __init__(self, radius=5, padding=0, x=pwidth / 2, y=pheight / 2, dx=0, dy=0, ax = 0, ay = 0, mass = 1, drawtrail = False, static = False):
+    def __init__(self, radius=5, x=pwidth / 2, y=pheight / 2, dx=0, dy=0, ax = 0, ay = 0, mass = 1, drawtrail = False, static = False):
         self.x, self.y = x, y
         self.prevx, self.prevy = x, y
         self.dx, self.dy = dx, dy
         self.ax, self.ay = ax,ay
-        self.padding = padding
         self.radius = radius
         self.yapply, self.xapply = True, True
         self.multix, self.multiy = 0.5, 0.5
@@ -95,8 +94,8 @@ class Ball:
 
     def draw(self, colour, colour2):
         if self.selected:
-            pygame.draw.circle(psurface, (0,0,255), (self.x + (windowpad / 2), self.y + (windowpad / 2)),self.radius + self.padding)
-            pygame.draw.circle(psurface, colour, (self.x + (windowpad / 2), self.y + (windowpad / 2)),self.radius - math.ceil(self.radius / 5) + self.padding)
+            pygame.draw.circle(psurface, (0,0,255), (self.x + (windowpad / 2), self.y + (windowpad / 2)),self.radius)
+            pygame.draw.circle(psurface, colour, (self.x + (windowpad / 2), self.y + (windowpad / 2)),self.radius - math.ceil(self.radius / 5))
             return
-        pygame.draw.circle(psurface, colour2, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius + self.padding)
-        pygame.draw.circle(psurface, colour, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius - math.ceil(self.radius / 5) + self.padding)
+        pygame.draw.circle(psurface, colour2, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius)
+        pygame.draw.circle(psurface, colour, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius - math.ceil(self.radius / 5))

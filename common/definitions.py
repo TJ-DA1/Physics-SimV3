@@ -20,7 +20,6 @@ def create_ball(obj, num, radius):
         x=random.randint(0, pwidth),
         y=random.randint(0, pheight),
         radius=radius,
-        padding = pad,
         drawtrail = False
     ) for _ in range(num)]
 

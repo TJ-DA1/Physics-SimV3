@@ -7,8 +7,6 @@ class GUIHandler:
         self.context = context
         self.Ball = Ball
         self.Square = Square
-        self.guiswitch = False
-        self.selswitch = False
         self.selind = 0
         self.selid = 0
 
@@ -26,31 +24,54 @@ class GUIHandler:
             sellist[self.selind].selected = True
         except:
             self.selid = 0
+
+    def objdel(self):
+        for i in self.context.balls:
+            if i.selected:
+                self.selind -= (1 if self.selind >= 1 else 0)
+                self.context.balls.remove(i)
+                self.objsel(self.selid, False, True)
+
+        for i in self.context.squares:
+            if i.selected:
+                self.selind -= (1 if self.selind >= 1 else 0)
+                self.context.squares.remove(i)
+                self.objsel(self.selid, False, True)
     
-    def handle(self,):
-        keys = pygame.key.get_pressed()
+    def handle(self):
         events = pygame.event.get()
+        keys = pygame.key.get_pressed()
 
         if keys[pygame.K_ESCAPE]:
             pygame.quit()
             raise SystemExit
-
-        if keys[pygame.K_g] and self.guiswitch:
-            self.context.guitoggle = not self.context.guitoggle
-            self.guiswitch = False
-        elif not keys[pygame.K_g]:
-            self.guiswitch = True
 
         self.context.gflip = -1 if keys[pygame.K_SPACE] else 1
         self.context.bring = True if keys[pygame.K_w] else False
 
         self.Ball.forces = [[self.context.gmag * self.context.gflip, self.context.deg]]
 
-        if not self.context.guitoggle:
-            return
-
         for event in events:
-            if event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    self.objsel(self.selid, keys[pygame.K_LEFT], keys[pygame.K_RIGHT])
+
+                elif event.key == pygame.K_g:
+                    self.context.guitoggle = not self.context.guitoggle
+                    print("toggled")
+                    print(self.context.guitoggle)
+
+                elif event.key == pygame.K_BACKSPACE:
+                    self.objdel()
+
+            elif event.type == pygame.QUIT:
+                pygame.quit()
+                raise SystemExit
+
+            if not self.context.guitoggle:
+                return
+
+            elif event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
                 if event.ui_element == colourselector:
                     self.context.colid = ["Main", "Outline", "Background"].index(event.selected_option_id)
                     rainbowcheck.set_state(self.context.rainbow[self.context.colid])
@@ -62,14 +83,7 @@ class GUIHandler:
                     self.objsel(self.selid, True, False)
 
             elif event.type == pygame_gui.UI_BUTTON_PRESSED:
-                for i in self.context.balls:
-                    if i.selected:
-                        self.context.balls.remove(i)
-                        self.objsel(self.selid, True, False)
-                for i in self.context.squares:
-                    if i.selected:
-                        self.context.squares.remove(i)
-                        self.objsel(self.selid, True, False)
+                self.objdel()
 
             elif event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
                 match self.context.colid:
@@ -110,18 +124,8 @@ class GUIHandler:
             elif event.type == pygame_gui.UI_CHECK_BOX_UNCHECKED:
                 self.context.rainbow[self.context.colid] = False
 
-            if (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]) and self.selswitch:
-                self.objsel(self.selid, keys[pygame.K_LEFT], keys[pygame.K_RIGHT])
-                self.selswitch = False
-            elif not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
-                self.selswitch = True
-
-            config.bcount = len(self.context.balls)
-            balllabel.set_text(f"Balls: {config.bcount}")
-            ballcount.set_current_value(config.bcount)
-
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                raise SystemExit
-
             manager.process_events(event)
+
+        config.bcount = len(self.context.balls)
+        balllabel.set_text(f"Balls: {config.bcount}")
+        ballcount.set_current_value(config.bcount)

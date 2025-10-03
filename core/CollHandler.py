@@ -98,7 +98,7 @@ class CollHandler:
         b2.y += (correction * ny)
 
     def overlapcirclesquare(self, b, dist, s, side):
-        overlap = dist - b.radius + 1
+        overlap = dist - b.radius
         collangle = math.radians([s.angle + 90, s.angle + 270, s.angle + 180, s.angle][side - 1])
 
         b.x += overlap * math.cos(collangle)

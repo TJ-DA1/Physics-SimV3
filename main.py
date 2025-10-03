@@ -7,7 +7,7 @@ context = SimulationContext()
 collision = CollHandler(context)
 interface = GUIHandler(context, Ball, Square)
 
-preconfiguration = ("null")
+preconfiguration = ("margaret")
 
 context.squares += preconfig[preconfiguration][0]
 context.balls += preconfig[preconfiguration][1]
@@ -17,7 +17,6 @@ context.balls += create_ball(Ball, bcount, rad)
 running = True
 
 def fixedupdate(ctx):
-    global square
     ctx.objects = ctx.balls + ctx.squares
     config.bcount = len(ctx.balls)
     ctx.deg += ctx.spinvel
@@ -46,7 +45,15 @@ def fixedupdate(ctx):
         i.calcpoints()
 
     for i in ctx.objects:
-        if ctx.bring: i.x, i.y = (pygame.mouse.get_pos()[0] * pwidth / width, pygame.mouse.get_pos()[1] * pheight / height) if type(i) == Ball else (i.x, i.y)
+        if ctx.bring:
+            mousex, mousey = pygame.mouse.get_pos()
+            mousex, mousey = mousex - (width / 2), mousey - (height / 2)
+            mousex, mousey = mousex * ((pwidth + windowpad)/width), mousey * ((pheight + windowpad)/height)
+            mousex, mousey = mousex + (pwidth / 2), mousey + (pheight / 2)
+
+            if type(i) == Ball and not i.static:
+                i.x,i.y = mousex,mousey
+
         i.movecalc2()
         i.draw(ctx.col2, ctx.col)
 

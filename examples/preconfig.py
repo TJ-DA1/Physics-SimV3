@@ -13,7 +13,7 @@ def plinkosetup():
             squares += [Square(y=pheight - 20, x=j - (i * pwidth / 10), sizex=3, sizey=40)]
 
         xcoords.pop(0)
-    return [squares,[]]
+    return squares
 
 def kerplunkgen():
     out = []
@@ -26,7 +26,7 @@ def kerplunkgen():
 
 
 preconfig = {
-    "plinko" : plinkosetup(),
+    "plinko" : [plinkosetup(),[]],
     "margaret" : [[Square(y = pheight - 30, x = (pwidth / 2) - 20, sizex = 5, sizey = 80, angle = 30),
                 Square(y = pheight - 30, x = (pwidth / 2) + 20, sizex = 5, sizey = 80, angle = -30),
                 Square(y = pheight - 100, x = (pwidth / 2), sizex = 5, sizey = 80, angle = 0),
@@ -44,6 +44,6 @@ preconfig = {
                Square(55, 55, -60, 30, 200),
                ] + kerplunkgen(),
               []],
-    "null" : [[],[]]
+    "null" : [[Square()],[]]
 
 }
