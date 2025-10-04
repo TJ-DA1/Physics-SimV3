@@ -58,8 +58,6 @@ class GUIHandler:
 
                 elif event.key == pygame.K_g:
                     self.context.guitoggle = not self.context.guitoggle
-                    print("toggled")
-                    print(self.context.guitoggle)
 
                 elif event.key == pygame.K_BACKSPACE:
                     self.objdel()
@@ -110,11 +108,11 @@ class GUIHandler:
                 elif event.ui_element == radslider:
                     for i in self.context.balls:
                         i.radius = event.value
-                        config.radius = event.value
-                    radlabel.set_text(f"Radius: {config.rad}")
+                        self.context.radius = event.value
+                    radlabel.set_text(f"Radius: {self.context.radius}")
                 elif event.ui_element == ballcount:
                     if len(self.context.balls) < event.value:
-                        self.context.balls += create_ball(self.Ball, event.value - len(self.context.balls), config.rad)
+                        self.context.balls += create_ball(self.Ball, event.value - len(self.context.balls), self.context)
                     elif len(self.context.balls) > event.value:
                         for i in range(len(self.context.balls) - event.value):
                             self.context.balls.pop()
@@ -126,6 +124,6 @@ class GUIHandler:
 
             manager.process_events(event)
 
-        config.bcount = len(self.context.balls)
-        balllabel.set_text(f"Balls: {config.bcount}")
-        ballcount.set_current_value(config.bcount)
+        self.context.bcount = len(self.context.balls)
+        balllabel.set_text(f"Balls: {self.context.bcount}")
+        ballcount.set_current_value(self.context.bcount)

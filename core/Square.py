@@ -29,13 +29,13 @@ class Square:
             self.points.append((xcoord, ycoord))
         self.lines = [(self.points[i], self.points[(i+1) if not (i+1) >= 4 else 0]) for i in range(4)]
 
-    def draw(self, colour, colour2):
+    def draw(self, ctx):
         if self.selected:
-            pygame.draw.polygon(psurface, colour, self.points, 0)
+            pygame.draw.polygon(psurface, ctx.col2, self.points, 0)
             pygame.draw.polygon(psurface, (0,0,255), self.points, math.ceil((self.sizex + self.sizey) / 60))
             return
-        pygame.draw.polygon(psurface, colour, self.points, 0)
-        pygame.draw.polygon(psurface, colour2, self.points, math.ceil((self.sizex + self.sizey) / 60))
+        pygame.draw.polygon(psurface, ctx.col2, self.points, 0)
+        pygame.draw.polygon(psurface, ctx.col, self.points, math.ceil((self.sizex + self.sizey) / 60))
 
     def movecalc(self):
         pass

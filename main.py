@@ -7,12 +7,12 @@ context = SimulationContext()
 collision = CollHandler(context)
 interface = GUIHandler(context, Ball, Square)
 
-preconfiguration = ("margaret")
+preconfiguration = ("plinko")
 
 context.squares += preconfig[preconfiguration][0]
 context.balls += preconfig[preconfiguration][1]
 
-context.balls += create_ball(Ball, bcount, rad)
+context.balls += create_ball(Ball, bcount, context)
 
 running = True
 
@@ -55,7 +55,7 @@ def fixedupdate(ctx):
                 i.x,i.y = mousex,mousey
 
         i.movecalc2()
-        i.draw(ctx.col2, ctx.col)
+        i.draw(ctx)
 
     small_screen = pygame.transform.scale(psurface, scalesize)
     pixelated_screen = pygame.transform.scale(small_screen, (width, height))

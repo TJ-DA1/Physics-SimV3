@@ -23,5 +23,7 @@ class SimulationContext:
         self.up = True
 
         self.balls = []
+        self.radius = rad
+        self.bcount = bcount
         self.squares = []
         self.objects = []

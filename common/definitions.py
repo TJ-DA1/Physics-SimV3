@@ -13,13 +13,13 @@ def boundary_difference(ball, vert, neg):
         else:
             return (ball.clipx - (pwidth - ball.radius))  / ((ball.clipx - ball.prevx) if (ball.clipx - ball.prevx) != 0 else 0.1)
 
-def create_ball(obj, num, radius):
+def create_ball(obj, num, ctx):
     return [obj(
         dx=random.uniform(-10, 10),
         dy=random.uniform(-10, 10),
         x=random.randint(0, pwidth),
         y=random.randint(0, pheight),
-        radius=radius,
+        radius=ctx.radius,
         drawtrail = False
     ) for _ in range(num)]
 

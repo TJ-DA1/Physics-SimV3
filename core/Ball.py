@@ -60,14 +60,14 @@ class Ball:
         if self.radius >= self.y:
             self.clipy = self.y
             self.y = self.radius
-            self.dy = abs(self.dy) * self.fric
+            self.dy = abs(self.dy) * self.rest
             self.multiy = boundary_difference(self, True, True)
             self.yapply = False
 
         else:
             self.clipy = self.y
             self.y = pheight - self.radius
-            self.dy = abs(self.dy) * self.fric * -1
+            self.dy = abs(self.dy) * self.rest * -1
             self.multiy = boundary_difference(self, True, False)
             self.yapply = False
         self.dx *= self.fric
@@ -79,23 +79,23 @@ class Ball:
         if self.radius >= self.x:
             self.clipx = self.x
             self.x = self.radius
-            self.dx = abs(self.dx) * self.fric
+            self.dx = abs(self.dx) * self.rest
             self.multix = boundary_difference(self, False, True)
             self.xapply = False
 
         else:
             self.clipx = self.x
             self.x = pwidth - self.radius
-            self.dx = abs(self.dx) * self.fric * -1
+            self.dx = abs(self.dx) * self.rest * -1
             self.multix = boundary_difference(self, False, False)
             self.xapply = False
         self.dy *= self.fric
 
 
-    def draw(self, colour, colour2):
+    def draw(self, ctx):
         if self.selected:
-            pygame.draw.circle(psurface, (0,0,255), (self.x + (windowpad / 2), self.y + (windowpad / 2)),self.radius)
-            pygame.draw.circle(psurface, colour, (self.x + (windowpad / 2), self.y + (windowpad / 2)),self.radius - math.ceil(self.radius / 5))
+            pygame.draw.circle(psurface, (0,0,255), (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius)
+            pygame.draw.circle(psurface, ctx.col2, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius - math.ceil(self.radius / 5))
             return
-        pygame.draw.circle(psurface, colour2, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius)
-        pygame.draw.circle(psurface, colour, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius - math.ceil(self.radius / 5))
+        pygame.draw.circle(psurface, ctx.col, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius)
+        pygame.draw.circle(psurface, ctx.col2, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius - math.ceil(self.radius / 5))

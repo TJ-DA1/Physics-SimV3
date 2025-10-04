@@ -41,7 +41,7 @@ class CollHandler:
     def checkcirclesquare(self, b, s):
         if b.static:
             return
-        #pygame.draw.rect(psurface,col2,(windowpad/2,windowpad/2, s.sizex, s.sizey), 3)
+        #pygame.draw.rect(psurface,col,(windowpad/2,windowpad/2, s.sizex, s.sizey), 3)
         if math.dist((b.x, b.y), (s.x, s.y)) > (max(s.sizex, s.sizey) * 0.5 * (2 ** (1 / 2))) + b.radius:
             return
 
@@ -51,7 +51,7 @@ class CollHandler:
         relcpos[0] += s.sizex / 2
         relcpos[1] += s.sizey / 2
 
-        #pygame.draw.circle(psurface, col2, (relcpos[0], relcpos[1]), b.radius, 3)
+        # pygame.draw.circle(psurface, col, (relcpos[0], relcpos[1]), b.radius, 3)
 
         testx = relcpos[0]
         testy = relcpos[1]
@@ -68,6 +68,7 @@ class CollHandler:
 
         distx = relcpos[0] - testx
         disty = relcpos[1] - testy
+
         dist = math.dist((0, 0), (distx, disty))
 
         if dist <= b.radius:
@@ -108,8 +109,9 @@ class CollHandler:
         collangle = math.radians([s.angle + 90, s.angle + 270, s.angle, s.angle + 180][side - 1])
         b1norm = (b.dx * math.cos(collangle)) + (b.dy * math.sin(collangle))
         b1tan = (-1 * b.dx * math.sin(collangle)) + (b.dy * math.cos(collangle))
-        b.dx = -b.rest * b1norm * math.cos(collangle) - b1tan * math.sin(collangle)
-        b.dy = -b.rest * b1norm * math.sin(collangle) + b1tan * math.cos(collangle)
+        rest = b.rest ** (1 / passes)
+        b.dx = -rest * b1norm * math.cos(collangle) - b1tan * math.sin(collangle) * b.fric
+        b.dy = -rest * b1norm * math.sin(collangle) + b1tan * math.cos(collangle) * b.fric
 
         self.overlapcirclesquare(b, dist, s, side)
 

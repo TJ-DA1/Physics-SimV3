@@ -25,5 +25,5 @@ bgcol = [255,255,255]
 rad = 10
 passes = 5
 restitution = 0.5
-friction = 0.5
-bcount = 50
+friction = 0.8
+bcount = 1
