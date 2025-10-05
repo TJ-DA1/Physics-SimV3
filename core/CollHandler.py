@@ -110,8 +110,9 @@ class CollHandler:
         b1norm = (b.dx * math.cos(collangle)) + (b.dy * math.sin(collangle))
         b1tan = (-1 * b.dx * math.sin(collangle)) + (b.dy * math.cos(collangle))
         rest = b.rest ** (1 / passes)
-        b.dx = -rest * b1norm * math.cos(collangle) - b1tan * math.sin(collangle) * b.fric
-        b.dy = -rest * b1norm * math.sin(collangle) + b1tan * math.cos(collangle) * b.fric
+        fric = b.fric ** (1 / passes)
+        b.dx = -rest * b1norm * math.cos(collangle) - b1tan * math.sin(collangle) * fric
+        b.dy = -rest * b1norm * math.sin(collangle) + b1tan * math.cos(collangle) * fric
 
         self.overlapcirclesquare(b, dist, s, side)
 
