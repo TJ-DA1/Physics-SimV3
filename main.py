@@ -17,7 +17,7 @@ context.balls += create_ball(Ball, bcount, context)
 running = True
 
 def fixedupdate(ctx):
-    ctx.objects = ctx.balls + ctx.squares
+    ctx.objects = ctx.squares + ctx.balls
     config.bcount = len(ctx.balls)
     ctx.deg += ctx.spinvel
 
@@ -44,17 +44,20 @@ def fixedupdate(ctx):
         i.angle += 0
         i.calcpoints()
 
-    for i in ctx.objects:
-        if ctx.bring:
-            mousex, mousey = pygame.mouse.get_pos()
-            mousex, mousey = mousex - (width / 2), mousey - (height / 2)
-            mousex, mousey = mousex * ((pwidth + windowpad)/width), mousey * ((pheight + windowpad)/height)
-            mousex, mousey = mousex + (pwidth / 2), mousey + (pheight / 2)
+    mousex, mousey = pygame.mouse.get_pos()
+    mouserelx, mouserely = pygame.mouse.get_rel()
+    mousex, mousey = mousex - (width / 2), mousey - (height / 2)
+    mousex, mousey = mousex * ((pwidth + windowpad) / width), mousey * ((pheight + windowpad) / height)
+    mouserelx, mouserely = mouserelx * ((pwidth + windowpad) / width), mouserely * ((pheight + windowpad) / height)
+    mousex, mousey = mousex + (pwidth / 2), mousey + (pheight / 2)
 
+    for i in ctx.objects:
+        i.movecalc2()
+        if ctx.bring:
             if type(i) == Ball and not i.static:
                 i.x,i.y = mousex,mousey
+                i.dx, i.dy = mouserelx, mouserely
 
-        i.movecalc2()
         i.draw(ctx)
 
     small_screen = pygame.transform.scale(psurface, scalesize)

@@ -8,9 +8,9 @@ def plinkosetup():
     squares = []
     for i in range(len(ycoords)):
         for j in xcoords:
-            squares += [Square(y=pheight - ycoords[i], x=j - (i * pwidth / 10), angle=45, sizex=30, sizey=30)]
+            squares += [Square(y=pheight - ycoords[i], x=j - (i * pwidth / 10), angle=45, sizex=20 * pwidth / 500, sizey=20 * pheight / 500)]
 
-            squares += [Square(y=pheight - 20, x=j - (i * pwidth / 10), sizex=3, sizey=40)] if (i < 2) else []
+            squares += [Square(y=pheight - 20, x=j - (i * pwidth / 10), sizex=3 * pwidth / 500, sizey=40 * pheight / 500)] if (i < 2) else []
 
         xcoords.pop(0)
     return squares
