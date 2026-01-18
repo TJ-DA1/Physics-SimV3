@@ -1,12 +1,9 @@
-from common.definitions import *
+from common import *
 
 class Ball:
-    col = col
-    col2 = col2
-    rest = restitution
-    fric = friction
     forces = []
-    def __init__(self, radius=5, x=pwidth / 2, y=pheight / 2, dx=0, dy=0, ax = 0, ay = 0, mass = 1, drawtrail = False, static = False):
+    objid = 0
+    def __init__(self, radius=5, x=ctx.pwidth / 2, y=ctx.pheight / 2, dx=0, dy=0, ax = 0, ay = 0, mass = 1, drawtrail = False, static = False):
         self.x, self.y = x, y
         self.prevx, self.prevy = x, y
         self.dx, self.dy = dx, dy
@@ -22,80 +19,83 @@ class Ball:
         self.points = []
         self.selected = False
 
-    def movecalc(self):
+    def movecalc(self, delta):
         if self.static:
             return
         self.prevy, self.prevx = self.y, self.x
         self.multix, self.multiy = 0.5, 0.5
         self.yapply, self.xapply = True, True
 
-        self.x += self.dx
-        self.y += self.dy
+        self.x += self.dx * delta
+        self.y += self.dy * delta
 
-        if self.drawtrail:
-            self.points.append([self.x, self.y])
-            for i in range(len(self.points) - 1):
-                pygame.draw.line(psurface, (0, 0, 10 * min(25.5, math.dist((self.points[i][0], self.points[i][1]), (self.points[i + 1][0], self.points[i + 1][1])) / 2)),(self.points[i][0] + (windowpad / 2), self.points[i][1] + (windowpad / 2)),(self.points[i + 1][0] + (windowpad / 2), self.points[i + 1][1] + (windowpad / 2)), 2)
-            if len(self.points) >= 200:
-                self.points.pop(0)
-
-    def movecalc2(self):
+    def movecalc2(self, delta):
         if self.static:
             return
+        self.forces = [[ctx.gmag * ctx.gflip, ctx.deg]]
         self.ax, self.ay = resolve_forces(self.forces)
         if self.xapply:
-            self.dx += self.ax
+            self.dx += self.ax * delta
         else:
-            self.dx += self.ax * self.multix
+            self.dx += self.ax * self.multix * delta
         if self.yapply:
-            self.dy += self.ay
+            self.dy += self.ay * delta
         else:
-            self.dy += self.ay * self.multiy
+            self.dy += self.ay * self.multiy * delta
 
 
     def boundarychecky(self):
-        if self.radius <= self.y <= pheight - self.radius:
+        if self.radius <= self.y <= ctx.pheight - self.radius:
             return
 
         if self.radius >= self.y:
             self.clipy = self.y
             self.y = self.radius
-            self.dy = abs(self.dy) * self.rest
-            self.multiy = boundary_difference(self, True, True)
+            self.dy = abs(self.dy) * ctx.restitution
+            self.multiy = boundary_difference(self, True, True, ctx)
             self.yapply = False
 
         else:
             self.clipy = self.y
-            self.y = pheight - self.radius
-            self.dy = abs(self.dy) * self.rest * -1
-            self.multiy = boundary_difference(self, True, False)
+            self.y = ctx.pheight - self.radius
+            self.dy = abs(self.dy) * ctx.restitution * -1
+            self.multiy = boundary_difference(self, True, False, ctx)
             self.yapply = False
-        self.dx *= self.fric
+        self.dx *= ctx.friction
 
     def boundarycheckx(self):
-        if self.radius <= self.x <= pwidth - self.radius:
+        if self.radius <= self.x <= ctx.pwidth - self.radius:
             return
 
         if self.radius >= self.x:
             self.clipx = self.x
             self.x = self.radius
-            self.dx = abs(self.dx) * self.rest
-            self.multix = boundary_difference(self, False, True)
+            self.dx = abs(self.dx) * ctx.restitution
+            self.multix = boundary_difference(self, False, True, ctx)
             self.xapply = False
 
         else:
             self.clipx = self.x
-            self.x = pwidth - self.radius
-            self.dx = abs(self.dx) * self.rest * -1
-            self.multix = boundary_difference(self, False, False)
+            self.x = ctx.pwidth - self.radius
+            self.dx = abs(self.dx) * ctx.restitution * -1
+            self.multix = boundary_difference(self, False, False, ctx)
             self.xapply = False
-        self.dy *= self.fric
+        self.dy *= ctx.friction
 
 
-    def draw(self, ctx):
+    def draw(self):
+        if self.drawtrail:
+            self.points.append([self.x, self.y])
+            for i in range(len(self.points) - 1):
+                pygame.draw.line(ctx.psurface, (0, 0, 10 * min(25.5, math.dist((self.points[i][0], self.points[i][1]), (self.points[i + 1][0], self.points[i + 1][1])) / 2)),
+                                 (self.points[i][0] + (ctx.windowpad / 2), self.points[i][1] + (ctx.windowpad / 2)),
+                                 (self.points[i + 1][0] + (ctx.windowpad / 2), self.points[i + 1][1] + (ctx.windowpad / 2)), 2)
+            if len(self.points) >= 200:
+                self.points.pop(0)
+
         if self.selected:
-            pygame.draw.circle(psurface, (0,0,255), (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius)
-            pygame.draw.circle(psurface, ctx.col2, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius - math.ceil(self.radius / 5))
+            pygame.draw.circle(ctx.psurface, (0, 0, 255), (self.x + (ctx.windowpad / 2), self.y + (ctx.windowpad / 2)), self.radius)
+            pygame.draw.circle(ctx.psurface, ctx.col2, (self.x + (ctx.windowpad / 2), self.y + (ctx.windowpad / 2)), self.radius - math.ceil(self.radius / 5))
             return
-        pygame.draw.circle(psurface, ctx.col, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius)
-        pygame.draw.circle(psurface, ctx.col2, (self.x + (windowpad / 2), self.y + (windowpad / 2)), self.radius - math.ceil(self.radius / 5))
+        pygame.draw.circle(ctx.psurface, ctx.col, (self.x + (ctx.windowpad / 2), self.y + (ctx.windowpad / 2)), self.radius)
+        pygame.draw.circle(ctx.psurface, ctx.col2, (self.x + (ctx.windowpad / 2), self.y + (ctx.windowpad / 2)), self.radius - math.ceil(self.radius / 5))

@@ -1,24 +1,31 @@
 import math, random
-from .config import *
 
-def boundary_difference(ball, vert, neg):
+def boundary_difference(ball, vert, neg, ctx):
     if vert:
         if neg:
             return (ball.radius - ball.clipy) / ((ball.prevy - ball.clipy) if (ball.prevy - ball.clipy) != 0 else 0.1)
         else:
-            return (ball.clipy - (pheight - ball.radius))  / ((ball.clipy - ball.prevy) if (ball.clipy - ball.prevy) != 0 else 0.1)
+            return (ball.clipy - (ctx.pheight - ball.radius))  / ((ball.clipy - ball.prevy) if (ball.clipy - ball.prevy) != 0 else 0.1)
     else:
         if neg:
             return (ball.radius - ball.clipx) / ((ball.prevx - ball.clipx) if (ball.prevx - ball.clipx) != 0 else 0.1)
         else:
-            return (ball.clipx - (pwidth - ball.radius))  / ((ball.clipx - ball.prevx) if (ball.clipx - ball.prevx) != 0 else 0.1)
+            return (ball.clipx - (ctx.pwidth - ball.radius))  / ((ball.clipx - ball.prevx) if (ball.clipx - ball.prevx) != 0 else 0.1)
+
+
+def multiplyvector(v, s):
+    return (v[0] * s, v[1] * s)
+
+def rotatepoint(point, angle):
+    return [point[0] * math.cos(math.radians(angle)) - point[1] * math.sin(math.radians(angle)),
+     point[0] * math.sin(math.radians(angle)) + point[1] * math.cos(math.radians(angle))]
 
 def create_ball(obj, num, ctx):
     return [obj(
         dx=random.uniform(-10, 10),
         dy=random.uniform(-10, 10),
-        x=random.randint(0, pwidth),
-        y=random.randint(0, pheight),
+        x=random.randint(0, ctx.pwidth),
+        y=random.randint(0, ctx.pheight),
         radius=ctx.radius,
         drawtrail = False
     ) for _ in range(num)]

@@ -1,4 +1,6 @@
-import pygame
+import pygame, pygame_gui
+import time
 pygame.init()
-from .config import *
 from .definitions import *
+from .SimulationContext import SimulationContext
+ctx = SimulationContext()
