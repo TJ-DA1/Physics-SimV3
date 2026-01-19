@@ -14,6 +14,7 @@ preconfiguration = ("square")
 
 # Gravity
 gmag = 1000
+gtype = 0
 deg = 90
 spinvel = 0
 

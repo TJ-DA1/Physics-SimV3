@@ -21,6 +21,7 @@ class SimulationContext:
         self.frames = [framerate for _ in range(5)]
 
         self.gmag = gmag
+        self.gtype = gtype
         self.gflip = 1
         self.deg = deg
         self.spinvel = spinvel
@@ -44,4 +45,6 @@ class SimulationContext:
         self.passes = passes
         self.balls = []
         self.squares = []
+        self.lines = []
+        self.empties = []
         self.objects = []

@@ -1,9 +1,8 @@
 from common import *
 
 class Ball:
-    forces = []
     objid = 0
-    def __init__(self, radius=5, x=ctx.pwidth / 2, y=ctx.pheight / 2, dx=0, dy=0, ax = 0, ay = 0, mass = 1, drawtrail = False, static = False):
+    def __init__(self, radius=5, x = ctx.pwidth / 2, y = ctx.pheight / 2, dx=0, dy=0, ax = 0, ay = 0, mass = 1, drawtrail = False, static = False):
         self.x, self.y = x, y
         self.prevx, self.prevy = x, y
         self.dx, self.dy = dx, dy
@@ -17,6 +16,7 @@ class Ball:
         self.static = static
         self.drawtrail = drawtrail
         self.points = []
+        self.forces = []
         self.selected = False
 
     def movecalc(self, delta):
@@ -32,7 +32,20 @@ class Ball:
     def movecalc2(self, delta):
         if self.static:
             return
-        self.forces = [[ctx.gmag * ctx.gflip, ctx.deg]]
+        if ctx.gtype == 0:
+            self.forces = [[ctx.gmag * ctx.gflip, math.radians(ctx.deg)]]
+        elif ctx.gtype == 1:
+            distance = math.dist((self.x, self.y), (ctx.pwidth / 2, ctx.pheight / 2)) / 100
+            if distance  < 1:
+                distance = 1
+            self.forces = [[ctx.gmag * ctx.gflip / (distance ** 2),math.atan2(self.y - ctx.pheight / 2, self.x - ctx.pwidth / 2) - math.pi]]
+        else:
+            distance = (math.dist((0,0),(ctx.pwidth/2,ctx.pheight/2)) - math.dist((self.x, self.y), (ctx.pwidth / 2, ctx.pheight / 2))) / 100
+            if distance < 1:
+                distance = 1
+            self.forces = [[ctx.gmag * ctx.gflip / (distance ** 2),
+                            math.atan2(self.y - ctx.pheight / 2, self.x - ctx.pwidth / 2)]]
+
         self.ax, self.ay = resolve_forces(self.forces)
         if self.xapply:
             self.dx += self.ax * delta

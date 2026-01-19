@@ -2,7 +2,7 @@ from common import *
 
 class Square:
     objid = 1
-    def __init__(self, x =ctx.pwidth / 2, y =ctx.pheight / 2, angle = 0, sizex = 100, sizey = 100):
+    def __init__(self, x = ctx.pwidth / 2, y = ctx.pheight / 2, angle = 0, sizex = 100, sizey = 100):
         self.x, self.y = x, y
         self.angle = angle
         self.sizex = sizex

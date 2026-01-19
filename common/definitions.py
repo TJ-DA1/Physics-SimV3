@@ -33,8 +33,8 @@ def create_ball(obj, num, ctx):
 def resolve_forces(component):
     axtemp, aytemp = 0, 0
     for i in component:
-        axtemp += i[0] * math.cos(math.radians(i[1]))
-        aytemp += i[0] * math.sin(math.radians(i[1]))
+        axtemp += i[0] * math.cos(i[1])
+        aytemp += i[0] * math.sin(i[1])
     return round(axtemp, 2), round(aytemp,2)
 
 

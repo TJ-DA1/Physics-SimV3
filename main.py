@@ -1,9 +1,5 @@
-from core import *
 from interface import *
-from examples import *
-
-elegui = Element()
-GUI = GUIHandler(Ball)
+GUI = GUIHandler()
 
 def setupscreen():
     finalise = False
@@ -17,47 +13,34 @@ def setupscreen():
 
 setupscreen()
 
+elegui = Element()
+elegui.initiate()
+
 ctx.screen = pygame.display.set_mode((ctx.width, ctx.height), vsync=1)
 ctx.psurface = pygame.Surface((ctx.pwidth + ctx.windowpad, ctx.pheight + ctx.windowpad))
 ctx.manager.set_window_resolution((ctx.width, ctx.height))
-elegui.initiate()
 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
+from core import *
+from examples import *
 
 collision = CollHandler()
 
 ctx.squares += preconfig[ctx.preconfiguration][0]
 ctx.balls += preconfig[ctx.preconfiguration][1]
+ctx.lines += preconfig[ctx.preconfiguration][2]
+ctx.empties += preconfig[ctx.preconfiguration][3]
 
 ctx.balls += create_ball(Ball, ctx.bcount, ctx)
 
-newnew = []
-new = [[Square(250, 250, 0, 100, 10), Square(250, 250, 0, 10, 100)] for i in range(4)]
-for i in new:
-    for j in i:
-        newnew += [j]
-
-ctx.squares += newnew
-emp1 = Empty(250,250, 0, newnew[0:2])
-emp2 = Empty(250,250, 0, newnew[2:4])
-emp3 = Empty(250,250, 0, newnew[4:6])
-emp4 = Empty(250,250, 0, newnew[6:8])
-emp1.possetter((150,350))
-emp2.possetter((150,150))
-emp3.possetter((350,150))
-emp4.possetter((350,350))
-emp = Empty(250,250,0,[emp1,emp2,emp3,emp4])
-
 running = True
 def update(delta):
-    for i in [emp,emp1,emp2,emp3,emp4]:
-        i.anglesetter(i.angle + 1)
-
     updrainbow(ctx, ctx.rcol)
     ctx.psurface.fill(ctx.bgcol)
     ctx.deg += ctx.spinvel
-    ctx.objects = ctx.squares + ctx.balls
+    ctx.objects = ctx.squares + ctx.balls + ctx.lines + ctx.empties
     ctx.bcount = len(ctx.balls)
-    GUI.handle(elegui)
+    GUI.handle(elegui, Ball)
 
     if ctx.bring:
         mousex, mousey = pygame.mouse.get_pos()
@@ -68,6 +51,8 @@ def update(delta):
         ctx.mousex, ctx.mousey = mousex + (ctx.pwidth / 2), mousey + (ctx.pheight / 2)
 
     for i in ctx.objects:
+        if i.objid == 3:
+            i.anglesetter(i.angle + i.spinvel)
         i.draw()
 
     for i in ctx.squares:

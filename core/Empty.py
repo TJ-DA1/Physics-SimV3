@@ -2,10 +2,11 @@ from common import *
 
 class Empty:
     objid = 3
-    def __init__(self, x, y, angle, children):
+    def __init__(self, x = ctx.pwidth / 2, y = ctx.pheight / 2, angle = 0, spinvel = 0, children = []):
         self.x = x
         self.y = y
         self.angle = angle
+        self.spinvel = spinvel
         self.children = children
 
     def possetter(self, pos):
@@ -60,3 +61,9 @@ class Empty:
                 i.x = rotpos[0] + self.x
                 i.y = rotpos[1] + self.y
         self.angle = newangle
+    def movecalc(self, delta):
+        pass
+    def movecalc2(self, delta):
+        pass
+    def draw(self):
+        pass

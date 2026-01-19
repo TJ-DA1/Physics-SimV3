@@ -3,8 +3,7 @@ from common import *
 from interface import *
 
 class GUIHandler:
-    def __init__(self, ball):
-        self.Ball = ball
+    def __init__(self):
         self.selind = 0
         self.selid = 0
 
@@ -36,7 +35,7 @@ class GUIHandler:
                 ctx.squares.remove(i)
                 self.objsel(self.selid, False, True)
     
-    def handle(self, elegui):
+    def handle(self, elegui, Ball):
         events = pygame.event.get()
         keys = pygame.key.get_pressed()
 
@@ -90,6 +89,9 @@ class GUIHandler:
                 if event.ui_element == elegui.gslider:
                     ctx.gmag = event.value * 1000
                     elegui.glabel.set_text(f"Gravity magnitude: {ctx.gmag / 1000}")
+                if event.ui_element == elegui.gtypeslider:
+                    ctx.gtype = event.value // 10
+                    elegui.gtypelabel.set_text(f"Gravity type: {ctx.gtype}")
                 elif event.ui_element == elegui.degslider:
                     ctx.deg = event.value + 90
                     elegui.deglabel.set_text(f"Gravity angle: {ctx.deg - 90}")
@@ -107,7 +109,7 @@ class GUIHandler:
                     elegui.radlabel.set_text(f"Radius: {ctx.radius}")
                 elif event.ui_element == elegui.ballcount:
                     if len(ctx.balls) < event.value:
-                        ctx.balls += create_ball(self.Ball, event.value - len(ctx.balls), ctx)
+                        ctx.balls += create_ball(Ball, event.value - len(ctx.balls), ctx)
                     elif len(ctx.balls) > event.value:
                         for i in range(len(ctx.balls) - event.value):
                             ctx.balls.pop()
@@ -139,6 +141,8 @@ class GUIHandler:
                         ctx.preconfiguration = event.text
                     case prescreen.gmagset:
                         ctx.gmag = int(event.text) * 1000
+                    case prescreen.gtypeset:
+                        ctx.gtype = int(event.text)
                     case prescreen.degset:
                         ctx.deg = int(event.text) + 90
                     case prescreen.spinvelset:
