@@ -26,7 +26,6 @@ def kerplunkgen():
 
 def rotategen():
     childsquares = []
-    print(ctx.pwidth, ctx.pheight)
     new = [[Square(ctx.pwidth / 2, ctx.pheight / 2, 0, ctx.pwidth / 5, 10), Square(ctx.pwidth / 2, ctx.pheight / 2, 0, 10, ctx.pheight / 5)] for i in range(4)]
     for i in new:
         for j in i:

@@ -15,7 +15,9 @@ class SimulationContext:
         self.screen = pygame.display.set_mode((300,400), flags=pygame.SCALED, vsync=1)
 
         self.guitoggle = True
+        self.editortoggle = False
         self.manager = pygame_gui.UIManager((self.width,self.height), "interface/theme.json")
+        self.editormanager = pygame_gui.UIManager((self.width,self.height), "interface/theme.json")
         self.prescreen = pygame_gui.UIManager((300,400), "interface/theme.json")
         self.framerate = framerate
         self.frames = [framerate for _ in range(5)]

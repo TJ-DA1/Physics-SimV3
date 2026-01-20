@@ -2,28 +2,19 @@ from common import *
 
 class Square:
     objid = 1
-    def __init__(self, x = ctx.pwidth / 2, y = ctx.pheight / 2, angle = 0, sizex = 100, sizey = 100):
+    def __init__(self, x = ctx.pwidth / 2, y = ctx.pheight / 2, angle = 0, sizex = 100, sizey = 100, spinvel = 0):
         self.x, self.y = x, y
         self.angle = angle
         self.sizex = sizex
         self.sizey = sizey
+        self.spinvel = spinvel
         self.points = []
         self.lines = []
         self.calcpoints()
         self.selected = False
 
     def calcpoints(self):
-        self.points = []
-        self.lines = []
-        diag = math.dist((0,0),(self.sizex,self.sizey)) / 2
-        rectang = math.radians(45) - math.atan2(self.sizey, self.sizex)
-
-        for i in range(4):
-            ang = (math.pi * 0.5 * i) - math.radians(45) + math.radians(self.angle) + (rectang * ((-1) ** i))
-            xcoord = self.x + (diag * math.cos(ang)) + ctx.windowpad / 2
-            ycoord = self.y + (diag * math.sin(ang)) + ctx.windowpad / 2
-            self.points.append((xcoord, ycoord))
-        self.lines = [(self.points[i], self.points[(i+1) if not (i+1) >= 4 else 0]) for i in range(4)]
+        self.points, self.lines = calcpoints(self.sizex, self.sizey, self.x, self.y, self.angle, ctx.windowpad / 2)
 
     def draw(self):
         if self.selected:

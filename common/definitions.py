@@ -12,9 +12,27 @@ def boundary_difference(ball, vert, neg, ctx):
         else:
             return (ball.clipx - (ctx.pwidth - ball.radius))  / ((ball.clipx - ball.prevx) if (ball.clipx - ball.prevx) != 0 else 0.1)
 
+def hide_elements(ele, ele2):
+    for i in ele:
+        i.hide()
+    for i in ele2:
+        i.show()
 
 def multiplyvector(v, s):
     return (v[0] * s, v[1] * s)
+
+def calcpoints(sizex, sizey, x, y, angle, offset):
+    points = []
+    diag = math.dist((0, 0), (sizex, sizey)) / 2
+    rectang = math.radians(45) - math.atan2(sizey, sizex)
+
+    for i in range(4):
+        ang = (math.pi * 0.5 * i) - math.radians(45) + math.radians(angle) + (rectang * ((-1) ** i))
+        xcoord = x + (diag * math.cos(ang)) + offset
+        ycoord = y + (diag * math.sin(ang)) + offset
+        points.append((xcoord, ycoord))
+    lines = [(points[i], points[(i + 1) if not (i + 1) >= 4 else 0]) for i in range(4)]
+    return points, lines
 
 def rotatepoint(point, angle):
     return [point[0] * math.cos(math.radians(angle)) - point[1] * math.sin(math.radians(angle)),

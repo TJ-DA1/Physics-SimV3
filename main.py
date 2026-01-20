@@ -1,4 +1,5 @@
 from interface import *
+
 GUI = GUIHandler()
 
 def setupscreen():
@@ -13,12 +14,15 @@ def setupscreen():
 
 setupscreen()
 
+editorgui = EditorElement()
+editorgui.initiate()
 elegui = Element()
 elegui.initiate()
 
 ctx.screen = pygame.display.set_mode((ctx.width, ctx.height), vsync=1)
 ctx.psurface = pygame.Surface((ctx.pwidth + ctx.windowpad, ctx.pheight + ctx.windowpad))
 ctx.manager.set_window_resolution((ctx.width, ctx.height))
+ctx.editormanager.set_window_resolution((ctx.width, ctx.height))
 pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
 from core import *
@@ -35,35 +39,45 @@ ctx.balls += create_ball(Ball, ctx.bcount, ctx)
 
 running = True
 def update(delta):
-    updrainbow(ctx, ctx.rcol)
     ctx.psurface.fill(ctx.bgcol)
-    ctx.deg += ctx.spinvel
     ctx.objects = ctx.squares + ctx.balls + ctx.lines + ctx.empties
     ctx.bcount = len(ctx.balls)
     GUI.handle(elegui, Ball)
 
-    if ctx.bring:
+    if ctx.bring or ctx.editortoggle:
         mousex, mousey = pygame.mouse.get_pos()
         mouserelx, mouserely = pygame.mouse.get_rel()
         mousex, mousey = mousex - (ctx.width / 2), mousey - (ctx.height / 2)
-        mousex, mousey = mousex * ((ctx.pwidth + ctx.windowpad) / ctx.width), mousey * ((ctx.pheight + ctx.windowpad) / ctx.height)
-        ctx.mouserelx, ctx.mouserely = mouserelx * ((ctx.pwidth + ctx.windowpad) / ctx.width), mouserely * ((ctx.pheight + ctx.windowpad) / ctx.height)
+        mousex, mousey = mousex * ((ctx.pwidth + ctx.windowpad) / ctx.width), mousey * (
+                    (ctx.pheight + ctx.windowpad) / ctx.height)
+        ctx.mouserelx, ctx.mouserely = mouserelx * ((ctx.pwidth + ctx.windowpad) / ctx.width), mouserely * (
+                    (ctx.pheight + ctx.windowpad) / ctx.height)
         ctx.mousex, ctx.mousey = mousex + (ctx.pwidth / 2), mousey + (ctx.pheight / 2)
 
-    for i in ctx.objects:
-        if i.objid == 3:
-            i.anglesetter(i.angle + i.spinvel)
-        i.draw()
+    if not ctx.editortoggle:
+        updrainbow(ctx, ctx.rcol)
+        ctx.deg += ctx.spinvel
+        for i in ctx.objects:
+            if i.objid == 3:
+                i.anglesetter(i.angle + i.spinvel)
+            elif i.objid == 1:
+                i.calcpoints()
+                i.angle += i.spinvel
 
-    for i in ctx.squares:
-        i.calcpoints()
-        i.angle += 0
+    for i in ctx.objects:
+        i.draw()
+    if ctx.editortoggle:
+        GUI.handleeditor(editorgui, [Ball, Square, Line, Empty])
 
     small_screen = pygame.transform.scale(ctx.psurface, (ctx.scalewidth, ctx.scaleheight))
     pixelated_screen = pygame.transform.scale(small_screen, (ctx.width, ctx.height))
     ctx.screen.blit(pixelated_screen, (0, 0))
 
-    if ctx.guitoggle:
+    if ctx.editortoggle:
+        ctx.editormanager.update(delta)
+        ctx.editormanager.draw_ui(ctx.screen)
+
+    if ctx.guitoggle and not ctx.editortoggle:
         ctx.manager.update(delta)
         ctx.manager.draw_ui(ctx.screen)
 
@@ -102,9 +116,10 @@ while running:
         update(etime - lastupd)
         lastupd = time.time()
 
-    physicsupdate(pdtime)
-    ctx.frames.append(1 / (time.time() - lastphysicsupd))
-    ctx.frames.pop(0)
-    elegui.framelabel.set_text(f"{round(sum(ctx.frames) / len(ctx.frames))}fps")
+    if not ctx.editortoggle:
+        physicsupdate(pdtime)
+        ctx.frames.append(1 / (time.time() - lastphysicsupd))
+        ctx.frames.pop(0)
+        elegui.framelabel.set_text(f"{round(sum(ctx.frames) / len(ctx.frames))}fps")
     lastphysicsupd = time.time()
     pdtime = lastphysicsupd - etime
