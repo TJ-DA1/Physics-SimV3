@@ -24,12 +24,4 @@ class Square:
         pygame.draw.polygon(ctx.psurface, ctx.col2, self.points, 0)
         pygame.draw.polygon(ctx.psurface, ctx.col, self.points, math.ceil((self.sizex + self.sizey) / 60))
 
-    def movecalc(self, delta):
-        pass
-    def movecalc2(self, delta):
-        pass
-    def boundarycheckx(self):
-        pass
-    def boundarychecky(self):
-        pass
 

@@ -134,7 +134,6 @@ class GUIHandler:
             if not ctx.editortoggle:
                 ctx.manager.process_events(event)
 
-        ctx.bcount = len(ctx.balls)
         elegui.balllabel.set_text(f"Balls: {ctx.bcount}")
         elegui.ballcount.set_current_value(ctx.bcount)
 

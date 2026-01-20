@@ -7,7 +7,3 @@ class Line:
         self.static = True
     def draw(self):
         pygame.draw.line(ctx.psurface, ctx.col, self.p1, self.p2, 3)
-    def movecalc(self, delta):
-        pass
-    def movecalc2(self, delta):
-        pass

@@ -84,6 +84,9 @@ def update(delta):
     pygame.display.flip()
 
 def physicsupdate(pdelta):
+    if ctx.editortoggle:
+        return
+
     for i in ctx.balls:
         i.movecalc(pdelta)
 
@@ -93,13 +96,15 @@ def physicsupdate(pdelta):
                 o1, o2 = ctx.objects[i], ctx.objects[j]
                 collision.collide(o1,o2)
 
-        for ball in ctx.balls:
-            ball.boundarycheckx()
-            ball.boundarychecky()
+    for ball in ctx.balls:
+        ball.boundarycheckx()
+        ball.boundarychecky()
 
-    for i in ctx.objects:
+    for i in ctx.balls:
         i.movecalc2(pdelta)
-        if ctx.bring:
+
+    if ctx.bring:
+        for i in ctx.objects:
             if i.objid == 0 and not i.static:
                 i.x,i.y = ctx.mousex,ctx.mousey
                 i.dx, i.dy = ctx.mouserelx * 50, ctx.mouserely * 50
@@ -108,18 +113,17 @@ etime = 0
 lastupd = 0
 lastphysicsupd = 0
 pdtime = 1
+ftime = 1 / ctx.framerate
 
 while running:
     etime = time.time()
-
-    if etime - lastupd >= 1 / ctx.framerate:
+    if etime - lastupd >= ftime:
         update(etime - lastupd)
         lastupd = time.time()
 
-    if not ctx.editortoggle:
-        physicsupdate(pdtime)
-        ctx.frames.append(1 / (time.time() - lastphysicsupd))
-        ctx.frames.pop(0)
-        elegui.framelabel.set_text(f"{round(sum(ctx.frames) / len(ctx.frames))}fps")
+    physicsupdate(pdtime)
+    ctx.frames.append(1 / (time.time() - lastphysicsupd))
+    ctx.frames.pop(0)
+    elegui.framelabel.set_text(f"{round(sum(ctx.frames) / len(ctx.frames))}fps")
     lastphysicsupd = time.time()
     pdtime = lastphysicsupd - etime

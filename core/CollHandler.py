@@ -4,9 +4,7 @@ from common import *
 
 class CollHandler:
     def collide(self, one, two):
-        if one is two:
-            return
-        elif one.objid == 3 or two.objid == 3:
+        if one.objid == 3 or two.objid == 3:
             return
         elif (one.objid == 1 or one.objid == 2) and (two.objid == 1 or two.objid == 2):
             return

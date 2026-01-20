@@ -61,9 +61,5 @@ class Empty:
                 i.x = rotpos[0] + self.x
                 i.y = rotpos[1] + self.y
         self.angle = newangle
-    def movecalc(self, delta):
-        pass
-    def movecalc2(self, delta):
-        pass
     def draw(self):
         pass

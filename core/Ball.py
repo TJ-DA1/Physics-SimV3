@@ -32,20 +32,19 @@ class Ball:
     def movecalc2(self, delta):
         if self.static:
             return
-        if ctx.gtype == 0:
-            self.forces = [[ctx.gmag * ctx.gflip, math.radians(ctx.deg)]]
-        elif ctx.gtype == 1:
-            distance = math.dist((self.x, self.y), (ctx.pwidth / 2, ctx.pheight / 2)) / 100
-            if distance  < 1:
-                distance = 1
-            self.forces = [[ctx.gmag * ctx.gflip / (distance ** 2),math.atan2(self.y - ctx.pheight / 2, self.x - ctx.pwidth / 2) - math.pi]]
-        else:
-            distance = (math.dist((0,0),(ctx.pwidth/2,ctx.pheight/2)) - math.dist((self.x, self.y), (ctx.pwidth / 2, ctx.pheight / 2))) / 100
-            if distance < 1:
-                distance = 1
-            self.forces = [[ctx.gmag * ctx.gflip / (distance ** 2),
-                            math.atan2(self.y - ctx.pheight / 2, self.x - ctx.pwidth / 2)]]
-
+        match ctx.gtype:
+            case 0:
+                self.forces = [[ctx.gmag * ctx.gflip, math.radians(ctx.deg)]]
+            case 1:
+                distance = math.dist((self.x, self.y), (ctx.pwidth / 2, ctx.pheight / 2)) / 100
+                if distance  < 1:
+                    distance = 1
+                self.forces = [[ctx.gmag * ctx.gflip / (distance ** 2),math.atan2(self.y - ctx.pheight / 2, self.x - ctx.pwidth / 2) - math.pi]]
+            case 2:
+                distance = (math.dist((0,0),(ctx.pwidth/2,ctx.pheight/2)) - math.dist((self.x, self.y), (ctx.pwidth / 2, ctx.pheight / 2))) / 100
+                if distance < 1:
+                    distance = 1
+                self.forces = [[ctx.gmag * ctx.gflip / (distance ** 2),math.atan2(self.y - ctx.pheight / 2, self.x - ctx.pwidth / 2)]]
         self.ax, self.ay = resolve_forces(self.forces)
         if self.xapply:
             self.dx += self.ax * delta
