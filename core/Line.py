@@ -5,5 +5,9 @@ class Line:
         self.p1 = list(p1)
         self.p2 = list(p2)
         self.static = True
+        self.selected = False
     def draw(self):
+        if self.selected and ctx.editortoggle:
+            pygame.draw.line(ctx.psurface, (0,0,255), self.p1, self.p2, 3)
+            return
         pygame.draw.line(ctx.psurface, ctx.col, self.p1, self.p2, 3)

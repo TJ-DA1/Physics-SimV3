@@ -2,12 +2,13 @@ from common import *
 
 class Empty:
     objid = 3
-    def __init__(self, x = ctx.pwidth / 2, y = ctx.pheight / 2, angle = 0, spinvel = 0, children = []):
+    def __init__(self, x = ctx.pwidth / 2, y = ctx.pheight / 2, angle = 0, spinvel = 0, children = ()):
         self.x = x
         self.y = y
         self.angle = angle
         self.spinvel = spinvel
-        self.children = children
+        self.children = list(children)
+        self.selected = False
 
     def possetter(self, pos):
         change = pos[0] - self.x, pos[1] - self.y
@@ -61,5 +62,12 @@ class Empty:
                 i.x = rotpos[0] + self.x
                 i.y = rotpos[1] + self.y
         self.angle = newangle
+
     def draw(self):
-        pass
+        if ctx.editortoggle:
+            if self.selected:
+                pygame.draw.line(ctx.psurface, (0,0,255), (self.x, self.y + 5), (self.x, self.y - 5), 2)
+                pygame.draw.line(ctx.psurface, (0, 0, 255), (self.x + 5, self.y), (self.x - 5, self.y), 2)
+                return
+            pygame.draw.line(ctx.psurface, ctx.col, (self.x, self.y + 5), (self.x, self.y - 5), 2)
+            pygame.draw.line(ctx.psurface, ctx.col, (self.x + 5, self.y), (self.x - 5, self.y), 2)

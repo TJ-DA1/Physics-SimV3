@@ -105,7 +105,7 @@ class Ball:
             if len(self.points) >= 200:
                 self.points.pop(0)
 
-        if self.selected:
+        if self.selected and ctx.editortoggle:
             pygame.draw.circle(ctx.psurface, (0, 0, 255), (self.x + (ctx.windowpad / 2), self.y + (ctx.windowpad / 2)), self.radius)
             pygame.draw.circle(ctx.psurface, ctx.col2, (self.x + (ctx.windowpad / 2), self.y + (ctx.windowpad / 2)), self.radius - math.ceil(self.radius / 5))
             return

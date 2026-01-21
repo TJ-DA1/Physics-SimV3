@@ -84,9 +84,6 @@ def update(delta):
     pygame.display.flip()
 
 def physicsupdate(pdelta):
-    if ctx.editortoggle:
-        return
-
     for i in ctx.balls:
         i.movecalc(pdelta)
 
@@ -121,9 +118,10 @@ while running:
         update(etime - lastupd)
         lastupd = time.time()
 
-    physicsupdate(pdtime)
-    ctx.frames.append(1 / (time.time() - lastphysicsupd))
-    ctx.frames.pop(0)
-    elegui.framelabel.set_text(f"{round(sum(ctx.frames) / len(ctx.frames))}fps")
+    if not ctx.editortoggle:
+        physicsupdate(pdtime)
+        ctx.frames.append(1 / ((time.time() - lastphysicsupd) + 0.0000001))
+        ctx.frames.pop(0)
+        elegui.framelabel.set_text(f"{round(sum(ctx.frames) / len(ctx.frames))}fps")
     lastphysicsupd = time.time()
     pdtime = lastphysicsupd - etime
