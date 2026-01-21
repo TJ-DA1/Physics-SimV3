@@ -9,6 +9,7 @@ class Empty:
         self.spinvel = spinvel
         self.children = list(children)
         self.selected = False
+        self.childselected = False
 
     def possetter(self, pos):
         change = pos[0] - self.x, pos[1] - self.y
@@ -29,7 +30,6 @@ class Empty:
                 i.y += change[1]
 
         self.x, self.y = pos
-
 
     def anglesetter(self, newangle):
         change = newangle - self.angle
@@ -65,9 +65,12 @@ class Empty:
 
     def draw(self):
         if ctx.editortoggle:
-            if self.selected:
+            if self.selected and not self.childselected:
                 pygame.draw.line(ctx.psurface, (0,0,255), (self.x, self.y + 5), (self.x, self.y - 5), 2)
                 pygame.draw.line(ctx.psurface, (0, 0, 255), (self.x + 5, self.y), (self.x - 5, self.y), 2)
-                return
-            pygame.draw.line(ctx.psurface, ctx.col, (self.x, self.y + 5), (self.x, self.y - 5), 2)
-            pygame.draw.line(ctx.psurface, ctx.col, (self.x + 5, self.y), (self.x - 5, self.y), 2)
+            elif self.childselected:
+                pygame.draw.line(ctx.psurface, (255,0,0), (self.x, self.y + 5), (self.x, self.y - 5), 2)
+                pygame.draw.line(ctx.psurface, (255, 0, 0), (self.x + 5, self.y), (self.x - 5, self.y), 2)
+            else:
+                pygame.draw.line(ctx.psurface, ctx.col, (self.x, self.y + 5), (self.x, self.y - 5), 2)
+                pygame.draw.line(ctx.psurface, ctx.col, (self.x + 5, self.y), (self.x - 5, self.y), 2)

@@ -5,6 +5,7 @@ import pygame_gui
 
 from common import *
 from interface import *
+from saves import *
 
 class GUIHandler:
     def __init__(self):
@@ -20,8 +21,10 @@ class GUIHandler:
         self.drawtrailparam = False
         self.drawing = False
 
-        self.emptyindex = -1
+        self.emptyindex = []
         self.emptychild = False
+
+        self.name = ""
 
     def objsel(self, id, l):
         sellist = [None, ctx.balls, ctx.squares, ctx.lines, ctx.empties][id]
@@ -37,14 +40,15 @@ class GUIHandler:
         except:
             self.selid = 0
 
-    def objdel(self):
+    def objdel(self, editorgui):
         for i in ctx.objects:
             if i.selected:
                 self.selind -= (1 if self.selind >= 1 else 0)
                 [ctx.balls, ctx.squares, ctx.lines, ctx.empties][i.objid].remove(i)
                 if i.objid == 3 and self.emptychild:
                     self.emptychild = False
-                    self.emptyindex -= 1
+                    self.emptyindex = []
+                    editorgui.childlabel.hide()
         self.objsel(self.selid, False)
     
     def handle(self, elegui, Ball):
@@ -126,6 +130,11 @@ class GUIHandler:
         elegui.ballcount.set_current_value(ctx.bcount)
 
     def handleeditor(self, editorgui, objs):
+        for i in ctx.empties:
+            i.childselected = False
+        if len(self.emptyindex):
+            ctx.empties[self.emptyindex[-1]].childselected = True
+
         for event in self.events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w and not self.drawing:
@@ -136,11 +145,14 @@ class GUIHandler:
                     self.objsel(self.selid, event.key == pygame.K_LEFT)
 
                 elif event.key == pygame.K_BACKSPACE:
-                    self.objdel()
+                    self.objdel(editorgui)
 
                 elif event.key == pygame.K_RETURN:
-                    self.emptychild = False
-                    editorgui.childlabel.hide()
+                    if self.emptychild:
+                        self.emptyindex.pop(-1)
+                        if len(self.emptyindex) < 1:
+                            self.emptychild = False
+                            editorgui.childlabel.hide()
 
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_w:
@@ -150,29 +162,44 @@ class GUIHandler:
                         case 0:
                             ctx.balls += [objs[0](x = self.startpos[0], y = self.startpos[1], radius = math.dist(self.startpos, endpos), drawtrail = self.drawtrailparam, mass = self.massparam if not (self.infmassparam or self.staticparam) else -1, static = self.staticparam)]
                             if self.emptychild:
-                                ctx.empties[self.emptyindex].children += [ctx.balls[len(ctx.balls) - 1]]
+                                ctx.empties[self.emptyindex[-1]].children += [ctx.balls[len(ctx.balls) - 1]]
                         case 1:
                             relx, rely = ctx.mousex - self.startpos[0], ctx.mousey - self.startpos[1]
                             relx, rely = rotatepoint((relx, rely), -self.angleparam)
                             xside, yside = abs(relx * 2), abs(rely * 2)
-                            ctx.squares += [objs[1](x = self.startpos[0], y = self.startpos[1], sizex = xside, sizey = yside, angle = self.angleparam)]
+                            ctx.squares += [objs[1](x = self.startpos[0], y = self.startpos[1], sizex = xside, sizey = yside, angle = self.angleparam, spinvel = self.spinvelparam)]
                             if self.emptychild:
-                                ctx.empties[self.emptyindex].children += [ctx.squares[len(ctx.squares) - 1]]
+                                ctx.empties[self.emptyindex[-1]].children += [ctx.squares[len(ctx.squares) - 1]]
                         case 2:
                             ctx.lines += [objs[2](self.startpos, endpos)]
                             if self.emptychild:
-                                ctx.empties[self.emptyindex].children += [ctx.lines[len(ctx.lines) - 1]]
+                                ctx.empties[self.emptyindex[-1]].children += [ctx.lines[len(ctx.lines) - 1]]
                         case 3:
-                            newempty = objs[3](self.startpos[0], self.startpos[1], 0, self.spinvelparam)
+                            newempty = objs[3](ctx.mousex, ctx.mousey, 0, self.spinvelparam)
 
                             if self.emptychild:
-                                ctx.empties[self.emptyindex].children += [newempty]
+                                ctx.empties[self.emptyindex[-1]].children += [newempty]
                             ctx.empties += [newempty]
 
-                            self.emptyindex = len(ctx.empties) - 1
+                            self.emptyindex += [len(ctx.empties) - 1]
                             self.emptychild = True
                             editorgui.childlabel.show()
 
+            elif event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == editorgui.childbutton:
+                    if not len(self.emptyindex) and len(ctx.empties):
+                        for i in range(len(ctx.empties)):
+                            self.emptyindex += [i]
+                        self.emptychild = True
+                        editorgui.childlabel.show()
+                elif event.ui_element == editorgui.savebutton:
+                    save(ctx, self.name)
+                elif event.ui_element == editorgui.loadbutton:
+                    self.selid = 0
+                    self.emptyindex = []
+                    self.emptychild = False
+                    editorgui.childlabel.hide()
+                    load(ctx, self.name, objs)
 
             elif event.type == pygame_gui.UI_CHECK_BOX_CHECKED or event.type == pygame_gui.UI_CHECK_BOX_UNCHECKED:
                 if event.ui_element == editorgui.staticcheck:
@@ -186,25 +213,30 @@ class GUIHandler:
                 if self.editorselid == 0:
                     self.massparam = event.value
                     editorgui.masslabel.set_text(f"Mass: {self.massparam}")
-                elif self.editorselid == 1:
-                    self.angleparam = event.value
-                    editorgui.anglelabel.set_text(f"Angle: {self.angleparam}")
-                else:
+                elif event.ui_element == editorgui.spinvelslider:
                     self.spinvelparam = event.value
                     editorgui.spinvellabel.set_text(f"Spin velocity: {self.spinvelparam}")
+                else:
+                    self.angleparam = event.value
+                    editorgui.anglelabel.set_text(f"Angle: {self.angleparam}")
+
 
             elif event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
                 if event.ui_element == editorgui.typeselector:
                     self.editorselid = ["Circle", "Rectangle", "Line", "Empty"].index(event.selected_option_id)
                     match self.editorselid:
                         case 0:
-                            hide, show = [editorgui.anglelabel, editorgui.angleslider, editorgui.spinvellabel, editorgui.spinvelslider],[editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck]
+                            hide, show = [editorgui.anglelabel, editorgui.angleslider, editorgui.spinvellabel, editorgui.spinvelslider, editorgui.childbutton],[editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck]
                         case 1:
-                            hide, show = [editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck, editorgui.spinvellabel, editorgui.spinvelslider], [editorgui.anglelabel, editorgui.angleslider]
+                            editorgui.spinvellabel.set_position((0,40))
+                            editorgui.spinvelslider.set_position((0,60))
+                            hide, show = [editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck, editorgui.childbutton], [editorgui.anglelabel, editorgui.angleslider,  editorgui.spinvellabel, editorgui.spinvelslider]
                         case 2:
-                            hide, show = [editorgui.anglelabel, editorgui.angleslider, editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck, editorgui.spinvellabel, editorgui.spinvelslider], []
+                            hide, show = [editorgui.anglelabel, editorgui.angleslider, editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck, editorgui.spinvellabel, editorgui.spinvelslider, editorgui.childbutton], []
                         case 3:
-                            hide, show = [editorgui.anglelabel, editorgui.angleslider, editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck], [editorgui.spinvellabel, editorgui.spinvelslider]
+                            editorgui.spinvellabel.set_position((0, 0))
+                            editorgui.spinvelslider.set_position((0, 20))
+                            hide, show = [editorgui.anglelabel, editorgui.angleslider, editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck], [editorgui.spinvellabel, editorgui.spinvelslider, editorgui.childbutton]
                     hide_elements(hide, show)
 
                 elif event.ui_element == editorgui.objselector:
@@ -213,6 +245,9 @@ class GUIHandler:
                     for i in ctx.objects:
                         i.selected = False
                     self.objsel(self.selid, True)
+
+            elif event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
+                self.name = event.text
 
             ctx.editormanager.process_events(event)
 
@@ -228,6 +263,9 @@ class GUIHandler:
                     pygame.draw.polygon(ctx.psurface, (0,0,255), points, 2)
                 case 2:
                     pygame.draw.line(ctx.psurface, (0, 0, 255), self.startpos, (ctx.mousex, ctx.mousey), 2)
+                case 3:
+                    pygame.draw.line(ctx.psurface, (0, 0, 255), (ctx.mousex, ctx.mousey + 5), (ctx.mousex, ctx.mousey - 5), 2)
+                    pygame.draw.line(ctx.psurface, (0, 0, 255), (ctx.mousex + 5, ctx.mousey), (ctx.mousex - 5, ctx.mousey), 2)
 
     def handleprescreen(self):
         keys = pygame.key.get_pressed()

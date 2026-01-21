@@ -1,4 +1,11 @@
 {
+  "button": {
+    "misc":
+    {
+      "shape": "rounded_rectangle",
+      "shape_corner_radius": "6"
+    }
+  },
   "drop_down_menu": {
          "misc":
          {
