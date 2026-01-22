@@ -15,24 +15,8 @@ def save(ctx, name):
                     f.write(stringconvert([i.uuid, i.objid, i.x, i.y, i.angle, i.sizex, i.sizey, i.spinvel]) + "\n")
                 case 2:
                     f.write(stringconvert([i.uuid, i.objid, i.p1[0], i.p1[1], i.p2[0], i.p2[1]]) + "\n")
-
-        for i in ctx.empties:
-            if booleanevaluate(j.objid != 3 for j in i.children):
-                emptieslist.remove(i)
-                orderedemptieslist.append(i)
-
-        while len(emptieslist) > 0:
-            for i in emptieslist:
-                prioritydecider = []
-                for j in i.children:
-                    if j.objid == 3:
-                        prioritydecider.append(j)
-                if booleanevaluate(j in orderedemptieslist for j in prioritydecider):
-                    orderedemptieslist.append(i)
-                    emptieslist.remove(i)
-
-        for i in orderedemptieslist:
-            f.write(stringconvert([i.uuid, i.objid, i.x, i.y, i.angle, i.spinvel, f"[{returnchildren(i)}]"]) + "\n")
+                case 3:
+                    f.write(stringconvert([i.uuid, i.objid, i.x, i.y, i.angle, i.spinvel, f"[{returnchildren(i)}]"]) + "\n")
 
 
 def load(ctx, name, objs):

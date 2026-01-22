@@ -40,10 +40,10 @@ ctx.balls += create_ball(Ball, ctx.bcount, ctx)
 running = True
 def update(delta):
     ctx.psurface.fill(ctx.bgcol)
-    ctx.objects = ctx.squares + ctx.balls + ctx.lines + ctx.empties
+    ctx.objects = ctx.balls + ctx.squares + ctx.lines + ctx.empties
     ctx.bcount = len(ctx.balls)
     GUI.handle(elegui, Ball)
-    
+
     if ctx.bring or ctx.editortoggle:
         mousex, mousey = pygame.mouse.get_pos()
         mouserelx, mouserely = pygame.mouse.get_rel()
