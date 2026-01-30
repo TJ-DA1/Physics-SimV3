@@ -1,9 +1,10 @@
 import pygame_gui.elements
 
 from common import *
-class EditorElement:
+class EditorElement: #Object as variables must be created late
     def initiate(self):
         self.objselector = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((ctx.width - 100, ctx.height - 25), (100, 25)), options_list = ["None", "Ball", "Rectangle", "Line", "Empty"], starting_option ="None", manager = ctx.editormanager)
+        self.delbutton = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((ctx.width - 125, ctx.height - 25), (25, 25)), text = "X", manager = ctx.editormanager)
 
         self.typeentry = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, ctx.height - 45), (100, 20)), text="Object type", manager=ctx.editormanager)
         self.typeselector = pygame_gui.elements.UIDropDownMenu(relative_rect=pygame.Rect((0, ctx.height - 25), (100, 25)), options_list = ["Circle", "Rectangle", "Line", "Empty"], starting_option ="Circle", manager = ctx.editormanager)
@@ -29,7 +30,7 @@ class EditorElement:
 
         self.colourentry = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((ctx.pwidth / 2 - 50, ctx.pheight - 45), (100, 20)), placeholder_text="File name",manager=ctx.editormanager)
 
-        self.childlabel.hide()
+        self.childlabel.hide() #Hide elements that should not appear until specific object type selected
         self.childbutton.hide()
         self.anglelabel.hide()
         self.angleslider.hide()

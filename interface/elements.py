@@ -1,11 +1,11 @@
 from common import *
-class Element:
+class Element: #Object as variables must be created late
     def initiate(self):
         self.glabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 0), (200, 20)), text=f"Gravity magnitude: {int(ctx.gmag / 1000)}", manager=ctx.manager)
         self.gslider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect((0, 20), (200, 20)), start_value=int(ctx.gmag / 1000), value_range=(-10, 10), manager=ctx.manager)
 
-        self.gtypelabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 40), (200, 20)), text=f"Gravity type: {ctx.gtype}", manager=ctx.manager)
-        self.gtypeslider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect((0, 60), (200, 20)), start_value=ctx.gtype * 10, value_range=(0, 29), manager=ctx.manager)
+        self.gtypelabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 40), (200, 20)), text=f"Gravity type: {["Uniform", "Radial", "Anti-radial", "Individual"][ctx.gtype]}", manager=ctx.manager)
+        self.gtypeslider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect((0, 60), (200, 20)), start_value=ctx.gtype * 10, value_range=(0, 39), manager=ctx.manager)
 
         self.deglabel = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 80), (200, 20)), text=f"Gravity angle: {ctx.deg - 90}", manager=ctx.manager)
         self.degslider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect((0, 100), (200, 20)), start_value=ctx.deg - 90, value_range=(-180, 180), manager=ctx.manager)

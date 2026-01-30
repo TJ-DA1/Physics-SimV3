@@ -24,7 +24,7 @@ col2 = [255,255,255]
 bgcol = [255,255,255]
 
 # Balls
-rad = 10
+radius = 10
 passes = 1
 restitution = 0.5
 friction = 0.8
