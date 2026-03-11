@@ -12,7 +12,7 @@ def boundary_difference(ball, vert, neg, ctx): #Returns multiplier of accelerati
         else: #Right of simulation border
             return (ball.clipx - (ctx.pwidth - ball.radius))  / ((ball.clipx - ball.prevx) if (ball.clipx - ball.prevx) != 0 else 0.1)
 
-def hide_elements(ele, ele2): #Tider way of hiding elements when selecting object type in editor
+def hide_elements(ele, ele2): #Tidier way of hiding elements when selecting object type in editor
     for i in ele:
         i.hide()
     for i in ele2:
@@ -55,25 +55,27 @@ def resolve_forces(component):
         aytemp += i[0] * math.sin(i[1])
     return round(axtemp, 2), round(aytemp,2)
 
-
 def hexformat(hexstring):
-    validsep = [",", ".", " ", "/"] #List of characters used as seperators
-    for i in validsep: #Checks string for every valid seperator
-        if i in hexstring:
-            string2 = hexstring
-            string2 = string2.split(i) #To avoid splitting the passed variable
-            if len(string2) == 3:
-                check = 0 #Initial check for input length
-                for i in string2:
-                    try:
-                        i = int(i) #Fails if element is not integer between -1 - 256
-                        if 0 <= i <= 255:
-                            check += 1
-                    except:
-                        check = -1000000
-                if check == 3:
-                    return list([int(i) for i in string2]) #Valid output
-    return None
+    try:
+        validsep = [",", ".", " ", "/"] #List of characters used as seperators
+        for i in validsep: #Checks string for every valid seperator
+            if i in hexstring:
+                string2 = hexstring
+                string2 = string2.split(i) #To avoid splitting the passed variable
+                if len(string2) == 3:
+                    check = 0 #Initial check for input length
+                    for i in string2:
+                        try:
+                            i = int(i) #Fails if element is not integer between -1 - 256
+                            if 0 <= i <= 255:
+                                check += 1
+                        except:
+                            check = -1000000
+                    if check == 3:
+                        return list([int(i) for i in string2]) #Valid output
+        return None
+    except:
+        return None
 
 def updrainbow(context, colour):
     if True not in context.rainbow: #No need to update if no colours are set to rainbow

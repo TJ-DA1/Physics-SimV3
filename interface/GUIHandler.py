@@ -45,6 +45,7 @@ class GUIHandler:
             if i.selected: #Find selected object
                 self.selind -= (1 if self.selind >= 1 else 0) #Update index
                 [ctx.balls, ctx.squares, ctx.lines, ctx.empties][i.objid].remove(i) #Remove object
+                ctx.objects = ctx.balls + ctx.squares + ctx.lines + ctx.empties  # Update objects list
                 if i.objid == 3 and self.emptychild: #Handle deleting child mode selected empty object
                     self.emptychild = False
                     self.emptyindex = []
@@ -121,6 +122,7 @@ class GUIHandler:
                     elif len(ctx.balls) > event.value: #Remove balls from sim
                         for i in range(len(ctx.balls) - event.value):
                             ctx.balls.pop()
+                    ctx.objects = ctx.balls + ctx.squares + ctx.lines + ctx.empties  # Update objects list
 
             elif event.type == pygame_gui.UI_CHECK_BOX_CHECKED or event.type == pygame_gui.UI_CHECK_BOX_UNCHECKED:
                 ctx.rainbow[ctx.colid] = elegui.rainbowcheck.get_state() #Make colour channel rainbow
@@ -236,17 +238,30 @@ class GUIHandler:
                     self.editorselid = ["Circle", "Rectangle", "Line", "Empty"].index(event.selected_option_id) #Object type to instantiate
                     match self.editorselid:
                         case 0: #Hide and show elements for ball instantiation
-                            hide, show = [editorgui.anglelabel, editorgui.angleslider, editorgui.spinvellabel, editorgui.spinvelslider, editorgui.childbutton],[editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck]
+                            hide, show = (
+                                [editorgui.anglelabel, editorgui.angleslider, editorgui.spinvellabel, editorgui.spinvelslider, editorgui.childbutton],
+                                [editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck]
+                            )
                         case 1: #Hide and show elements for rectangle instantiation
                             editorgui.spinvellabel.set_position((0,40))
                             editorgui.spinvelslider.set_position((0,60))
-                            hide, show = [editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck, editorgui.childbutton], [editorgui.anglelabel, editorgui.angleslider,  editorgui.spinvellabel, editorgui.spinvelslider]
+                            hide, show = (
+                                [editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck, editorgui.childbutton],
+                                [editorgui.anglelabel, editorgui.angleslider,  editorgui.spinvellabel, editorgui.spinvelslider]
+                            )
                         case 2: #Hide and show elements for line instantiation
-                            hide, show = [editorgui.anglelabel, editorgui.angleslider, editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck, editorgui.spinvellabel, editorgui.spinvelslider, editorgui.childbutton], []
+                            hide, show = (
+                                [editorgui.anglelabel, editorgui.angleslider, editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck, editorgui.spinvellabel, editorgui.spinvelslider, editorgui.childbutton],
+                                []
+                            )
+
                         case 3: #Hide and show elements for empty instantiation
                             editorgui.spinvellabel.set_position((0, 0))
                             editorgui.spinvelslider.set_position((0, 20))
-                            hide, show = [editorgui.anglelabel, editorgui.angleslider, editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck], [editorgui.spinvellabel, editorgui.spinvelslider, editorgui.childbutton]
+                            hide, show = (
+                                [editorgui.anglelabel, editorgui.angleslider, editorgui.masslabel, editorgui.massslider, editorgui.staticcheck, editorgui.trailcheck, editorgui.infmasscheck],
+                                [editorgui.spinvellabel, editorgui.spinvelslider, editorgui.childbutton]
+                            )
                     hide_elements(hide, show)
 
                 elif event.ui_element == editorgui.objselector:
@@ -284,6 +299,8 @@ class GUIHandler:
                 case 3: #Draw empty preview
                     pygame.draw.line(ctx.psurface, (0, 0, 255), (ctx.mousex, ctx.mousey + 5), (ctx.mousex, ctx.mousey - 5), 2)
                     pygame.draw.line(ctx.psurface, (0, 0, 255), (ctx.mousex + 5, ctx.mousey), (ctx.mousex - 5, ctx.mousey), 2)
+
+        ctx.objects = ctx.balls + ctx.squares + ctx.lines + ctx.empties  # Update objects list
 
     def handleprescreen(self):
         keys = pygame.key.get_pressed()

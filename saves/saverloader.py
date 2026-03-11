@@ -67,6 +67,11 @@ def load(ctx, name, objs):
 
     ctx.balls, ctx.squares, ctx.lines, ctx.empties = circles, squares, lines, empties #Final loading
     ctx.objects = objects
+    # ctx.balls += circles
+    # ctx.squares += squares
+    # ctx.lines += lines
+    # ctx.empties += empties
+    # ctx.objects += objects
 
 
 def reverselist(string): #Reverses list and splits into children IDs

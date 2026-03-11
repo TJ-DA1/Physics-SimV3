@@ -3,7 +3,7 @@
 *.py[cod]
 *$py.class
 *.pyc
-../../Physics-SimV2/.idea
+../../Physics-SimV3/.idea
 
 # C extensions
 *.so

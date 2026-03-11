@@ -37,11 +37,11 @@ ctx.lines += preconfig[ctx.preconfiguration][2]
 ctx.empties += preconfig[ctx.preconfiguration][3]
 
 ctx.balls += create_ball(Ball, ctx.bcount, ctx) #Add dynamic objects
+ctx.objects = ctx.balls + ctx.squares + ctx.lines + ctx.empties #Update objects list
 
 running = True
 def update(delta):
     ctx.psurface.fill(ctx.bgcol) #Background
-    ctx.objects = ctx.balls + ctx.squares + ctx.lines + ctx.empties #Update objects list
     ctx.bcount = len(ctx.balls) #Update ball count
     GUI.handle(elegui, Ball) #Handle GUI interact
 
@@ -67,6 +67,7 @@ def update(delta):
 
     for i in ctx.objects:
         i.draw() #Draw objects
+
     if ctx.editortoggle:
         GUI.handleeditor(editorgui, [Ball, Square, Line, Empty]) #Handle editor interact
 
@@ -124,5 +125,6 @@ while running:
         ctx.frames.append(1 / ((time.time() - lastphysicsupd) + 0.0000001)) #Calculate framerate
         ctx.frames.pop(0)
         elegui.framelabel.set_text(f"{round(sum(ctx.frames) / len(ctx.frames))}fps")
+
     lastphysicsupd = time.time()
     pdtime = lastphysicsupd - etime #Physics delta time
